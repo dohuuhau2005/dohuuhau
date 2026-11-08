@@ -34,75 +34,56 @@
 
         [data-theme="light"] {
             --bg-color: #f8fafc;
-            /* Nền chính: Trắng xám nhẹ (Slate-50), không bị chói mắt */
             --card-bg: #ffffff;
-            /* Nền card: Trắng tinh nổi bật trên nền xám nhẹ */
             --text-main: #0f172a;
-            /* Chữ tiêu đề & chính: Xanh đen đậm (Slate-900), cực kỳ sắc nét */
             --text-muted: #64748b;
-            /* Chữ phụ/mô tả: Xám trung tính (Slate-500), dịu mắt */
             --accent: #0284c7;
-            /* Màu điểm nhấn: Xanh dương công nghệ (Sky-600), đủ độ đậm để nổi trên nền trắng */
             --accent-glow: rgba(2, 132, 199, 0.2);
-            /* Hiệu ứng phát sáng nhẹ nhàng cho light mode */
             --line-color: rgba(15, 23, 42, 0.3);
+        }
 
-            /* Đường viền: Xám mờ tinh tế */
-            h2 {
-                color: #0f172a;
-            }
+        /* Đưa các thẻ h2 ra ngoài viết phẳng để 100% các dòng điện thoại đều hiểu */
+        [data-theme="light"] h2,
+        [data-theme="light"] .footer-section h2 {
+            color: #0f172a !important;
+        }
 
-            .footer-section h2 {
-                color: #0f172a;
-            }
+        [data-theme="light"] .quick-nav {
+            background: rgba(248, 250, 252, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
 
-            .quick-nav {
-                background: rgba(248, 250, 252, 0.8);
-                backdrop-filter: blur(12px);
-                -webkit-backdrop-filter: blur(12px);
-            }
+        [data-theme="light"] .quick-nav a {
+            color: #0f172a;
+        }
 
-            .quick-nav a {
-                color: #0f172a;
-            }
+        [data-theme="light"] .btn-primary {
+            background: var(--accent);
+            color: #ffffff;
+        }
 
-            .btn-primary {
-                background: var(--accent);
-                color: #ffffff;
-            }
+        [data-theme="light"] .tech-icon {
+            background: #ffffff;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+        }
 
-            .tech-icon {
-                background: #ffffff;
-                border: 1px solid var(--accent);
-                color: var(--accent);
-            }
+        [data-theme="light"] .orbit {
+            border: 1.5px dashed rgba(2, 132, 199, 0.8);
+            filter: drop-shadow(0 0 6px rgba(2, 132, 199, 0.5));
+        }
 
+        [data-theme="light"] .timeline-card h3 {
+            color: #0f172a;
+        }
 
-            .orbit {
-                position: absolute;
-                width: 100%;
-                height: 100%;
-                border-radius: 50%;
-                /* Tăng alpha lên 0.9 để màu xanh tươi và rực hơn */
-                border: 1.5px dashed rgba(0, 229, 255, 0.9);
+        [data-theme="light"] .timeline-card h4 {
+            color: #475569;
+        }
 
-                /* Hiệu ứng phát sáng neon trực tiếp cho viền nét đứt */
-                filter: drop-shadow(0 0 6px rgba(0, 229, 255, 0.8));
-
-                cursor: grab;
-                z-index: 5;
-            }
-
-            .timeline-card h4 {
-                color: #475569;
-            }
-
-
-
-            /* footer copyright */
-            .copyright {
-                color: rgba(15, 23, 42, 0.5);
-            }
+        [data-theme="light"] .copyright {
+            color: rgba(15, 23, 42, 0.5);
         }
 
         /* Thêm cuộn mượt cho các liên kết mỏ neo */
