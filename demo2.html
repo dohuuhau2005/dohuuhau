@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Software Engineer Portfolio</title>
+    <style>
+        :root {
+            --bg-color: #09090b;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #00e5ff;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            overflow-x: hidden;
+            cursor: none;
+            /* Ẩn chuột mặc định */
+        }
+
+        /* --- Hiệu ứng Tia sét --- */
+        #lightning-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 30px;
+            height: 30px;
+            pointer-events: none;
+            z-index: 9999;
+            font-size: 28px;
+            text-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent);
+            animation: zap 0.1s infinite alternate;
+        }
+
+        @keyframes zap {
+            from {
+                transform: translate(-50%, -50%) rotate(-5deg);
+                filter: brightness(1);
+            }
+
+            to {
+                transform: translate(-50%, -50%) rotate(5deg);
+                filter: brightness(1.3);
+            }
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            margin-bottom: 80px;
+        }
+
+        .avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #1e293b, #334155);
+            border: 2px solid var(--accent);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .hero-text h1 {
+            font-size: 2.5rem;
+            margin: 0 0 10px 0;
+        }
+
+        .hero-text h2 {
+            font-size: 1.2rem;
+            color: var(--accent);
+            margin: 0 0 20px 0;
+        }
+
+        .hero-text p {
+            color: var(--text-muted);
+            line-height: 1.6;
+            max-width: 600px;
+        }
+
+        /* --- 3 Khối Skills (Hover Reveal) --- */
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 80px;
+        }
+
+        .skill-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-content {
+            opacity: 0.3;
+            transform: translateY(10px);
+            transition: all 0.4s ease;
+        }
+
+        /* Hiệu ứng khi tia sét lướt qua */
+        .skill-card:hover {
+            border-color: rgba(0, 229, 255, 0.5);
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.1);
+            background: rgba(0, 229, 255, 0.03);
+        }
+
+        .skill-card:hover .skill-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .skill-card h3 {
+            color: var(--accent);
+            margin-top: 0;
+        }
+
+        .skill-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* --- Projects Grid --- */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 80px;
+        }
+
+        .project-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .project-card h3 {
+            margin-top: 0;
+        }
+
+        .tags {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            font-size: 0.8rem;
+            padding: 5px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            color: var(--accent);
+        }
+
+        /* --- Timeline (Kinh nghiệm) --- */
+        .timeline {
+            border-left: 2px solid rgba(255, 255, 255, 0.1);
+            padding-left: 30px;
+            margin-left: 15px;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 40px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -37px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        .timeline-date {
+            font-size: 0.9rem;
+            color: var(--accent);
+            margin-bottom: 5px;
+        }
+
+        .timeline-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .timeline-desc {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="lightning-cursor">⚡</div>
+
+    <div class="container">
+
+        <!-- Hero Section -->
+        <div class="hero">
+            <div class="avatar">[Ảnh Đại Diện]</div>
+            <div class="hero-text">
+                <h1>Đỗ Hữu Hậu</h1>
+                <h2>Software Engineer | Backend Architecture</h2>
+                <p>Kiến tạo các hệ thống phân tán mạnh mẽ và tối ưu luồng dữ liệu. Tập trung vào việc triển khai kiến
+                    trúc phần mềm sạch, đảm bảo hiệu năng và tính toàn vẹn dữ liệu từ quy mô cốt lõi.</p>
+            </div>
+        </div>
+
+        <!-- Skills Section (Tia sét lướt qua sẽ sáng lên) -->
+        <h2 class="section-title">Core Competencies</h2>
+        <div class="skills-grid">
+            <div class="skill-card">
+                <div class="skill-content">
+                    <h3>System Architecture</h3>
+                    <p>Thiết kế hệ thống 3 lớp chuẩn mực. Cô lập logic kinh doanh với khuôn mẫu DAO/DTO để đảm bảo khả
+                        năng mở rộng.</p>
+                </div>
+            </div>
+            <div class="skill-card">
+                <div class="skill-content">
+                    <h3>Database Optimization</h3>
+                    <p>Làm chủ SQL Server & Oracle. Tối ưu hóa truy vấn bằng Indexing linh hoạt thay vì các thuật toán
+                        tìm kiếm cồng kềnh.</p>
+                </div>
+            </div>
+            <div class="skill-card">
+                <div class="skill-content">
+                    <h3>Backend Ecosystem</h3>
+                    <p>Thành thạo C# (.NET Core) và Node.js. Ứng dụng quy trình tự động hóa môi trường để triển khai
+                        nhanh chóng.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Projects Section -->
+        <h2 class="section-title">Featured Projects</h2>
+        <div class="projects-grid">
+            <div class="project-card">
+                <h3>Electricity Service System</h3>
+                <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;">Hệ thống cơ sở dữ liệu phân
+                    tán đảm bảo đồng bộ hóa dữ liệu thời gian thực và xử lý khả năng chịu lỗi cao.</p>
+                <div class="tags">
+                    <span class="tag">Oracle</span>
+                    <span class="tag">RabbitMQ</span>
+                    <span class="tag">Redis</span>
+                </div>
+            </div>
+            <div class="project-card">
+                <h3>Souvenir E-commerce Platform</h3>
+                <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;">Nền tảng thương mại điện tử
+                    triển khai theo kiến trúc Microservices, quản lý luồng thanh toán và giỏ hàng tối ưu.</p>
+                <div class="tags">
+                    <span class="tag">ASP.NET Core</span>
+                    <span class="tag">React</span>
+                    <span class="tag">Microservices</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Timeline Section -->
+        <h2 class="section-title">Experience & Education</h2>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-date">2023 - Hiện tại</div>
+                <div class="timeline-title">Information Technology (GPA: 3.6/4.0)</div>
+                <div class="timeline-desc">Đại học Ngoại ngữ - Tin học TP.HCM (HUFLIT). Định hướng chuyên sâu vào công
+                    nghệ phần mềm, cấu trúc dữ liệu và phát triển Backend.</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">Mục tiêu 2026-2027</div>
+                <div class="timeline-title">AWS Certified Solutions Architect</div>
+                <div class="timeline-desc">Đang trong lộ trình chuẩn bị thi chứng chỉ SAA-C03 và IELTS để chuẩn hóa năng
+                    lực thiết kế hệ thống Cloud chuẩn quốc tế.</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Script tạo tia sét -->
+    <script>
+        const cursor = document.getElementById('lightning-cursor');
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function animate() {
+            let dx = mouseX - cursorX;
+            let dy = mouseY - cursorY;
+            cursorX += dx * 0.2;
+            cursorY += dy * 0.2;
+            cursor.style.left = `${cursorX}px`;
+            cursor.style.top = `${cursorY}px`;
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+
+</html>

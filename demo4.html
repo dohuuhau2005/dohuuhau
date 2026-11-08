@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Do Huu Hau - Interactive Portfolio</title>
+    <style>
+        :root {
+            --bg-color: #09090b;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #00e5ff;
+            --accent-glow: rgba(0, 229, 255, 0.4);
+            --line-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Thêm cuộn mượt cho các liên kết mỏ neo */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+            cursor: default;
+            /* Chừa khoảng trống phía trên cho thanh Navigation cố định */
+            padding-top: 70px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px 80px 20px;
+        }
+
+        /* =========================================
+           0. QUICK NAVIGATION BAR (Thanh truy cập nhanh)
+           ========================================= */
+        .quick-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(9, 9, 11, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            box-sizing: border-box;
+        }
+
+        .quick-nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+
+        .quick-nav a:hover {
+            color: var(--accent);
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+        }
+
+        /* =========================================
+           1. HERO & TECH ORBIT (VÒNG XOAY CÔNG NGHỆ)
+           ========================================= */
+        .hero {
+            display: flex;
+            align-items: center;
+            gap: 60px;
+            margin-bottom: 120px;
+            padding-left: 20px;
+        }
+
+        .avatar-container {
+            position: relative;
+            width: 260px;
+            height: 260px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .avatar {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #1e293b, #334155);
+            border: 2px solid var(--accent);
+            box-shadow: 0 0 25px rgba(0, 229, 255, 0.3);
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .orbit {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 1px dashed rgba(0, 229, 255, 0.3);
+            cursor: grab;
+            z-index: 5;
+        }
+
+        .orbit:active {
+            cursor: grabbing;
+        }
+
+        .tech-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 46px;
+            height: 46px;
+            background: #1e293b;
+            border: 1px solid var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: var(--accent);
+            box-shadow: 0 0 12px rgba(0, 229, 255, 0.25);
+            user-select: none;
+        }
+
+        .hero-text h1 {
+            font-size: 3.2rem;
+            margin: 0 0 10px 0;
+            letter-spacing: 1px;
+        }
+
+        .hero-text h2 {
+            font-size: 1.2rem;
+            color: var(--accent);
+            margin: 0 0 20px 0;
+        }
+
+        .hero-text p {
+            color: var(--text-muted);
+            max-width: 550px;
+            margin: 0;
+        }
+
+        .section-header {
+            font-size: 1.8rem;
+            color: #fff;
+            margin: 0 0 40px 0;
+            border-bottom: 1px solid var(--line-color);
+            padding-bottom: 10px;
+            /* Scroll margin để cuộn đến không bị dính vào Nav bar */
+            scroll-margin-top: 90px;
+        }
+
+        /* =========================================
+           2. CORE COMPETENCIES (CYBER SCAN & 3D UNFOLD)
+           ========================================= */
+        .skills-section {
+            position: relative;
+            margin-bottom: 120px;
+            perspective: 1000px;
+        }
+
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), #fff, var(--accent), transparent);
+            box-shadow: 0 0 15px var(--accent), 0 0 30px var(--accent);
+            opacity: 0;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        .skills-section.active .scan-line {
+            animation: cyber-scan 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes cyber-scan {
+            0% {
+                top: 0%;
+                opacity: 0;
+            }
+
+            15% {
+                opacity: 1;
+            }
+
+            85% {
+                opacity: 1;
+            }
+
+            100% {
+                top: 100%;
+                opacity: 0;
+            }
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .skill-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px 25px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(40px) rotateX(-20deg);
+            transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .skill-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            transition: 0.5s;
+        }
+
+        .skills-section.active .skill-card {
+            animation: skill-unfold 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .skills-section.active .skill-card:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        .skills-section.active .skill-card:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+
+        .skills-section.active .skill-card:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+
+        @keyframes skill-unfold {
+            to {
+                opacity: 1;
+                transform: translateY(0) rotateX(0deg);
+            }
+        }
+
+        .skills-section.active .skill-card::before {
+            animation: border-beam 2.5s linear infinite 1s;
+        }
+
+        @keyframes border-beam {
+            0% {
+                left: -100%;
+            }
+
+            100% {
+                left: 100%;
+            }
+        }
+
+        .skill-card:hover {
+            border-color: rgba(0, 229, 255, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 229, 255, 0.15);
+            transform: translateY(-5px);
+        }
+
+        .skill-card h3 {
+            color: var(--accent);
+            margin: 0 0 12px 0;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .skill-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        /* =========================================
+           3. TIMELINE PROJECTS & EXPERIENCES
+           ========================================= */
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+            margin-bottom: 100px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--line-color);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 60px;
+            margin-bottom: 60px;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 14px;
+            top: 0;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--bg-color);
+            border: 2px solid var(--line-color);
+            transition: all 0.6s ease;
+            z-index: 2;
+        }
+
+        .timeline-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.6s ease;
+        }
+
+        .timeline-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .timeline-item.visible::before {
+            background: var(--accent);
+            border-color: var(--accent);
+            box-shadow: 0 0 15px var(--accent), 0 0 30px var(--accent);
+        }
+
+        .timeline-item.visible .timeline-card {
+            border-color: rgba(0, 229, 255, 0.4);
+            box-shadow: 0 5px 30px rgba(0, 229, 255, 0.05);
+            background: rgba(0, 229, 255, 0.02);
+        }
+
+        .date {
+            font-size: 0.85rem;
+            color: var(--accent);
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .timeline-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.4rem;
+        }
+
+        .timeline-card h4 {
+            margin: 0 0 15px 0;
+            color: #cbd5e1;
+            font-weight: normal;
+            font-size: 1rem;
+        }
+
+        .timeline-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .tags {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            font-size: 0.8rem;
+            padding: 5px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            color: var(--accent);
+            border: 1px solid rgba(0, 229, 255, 0.2);
+        }
+
+        .btn-github {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-github:hover {
+            background: rgba(0, 229, 255, 0.1);
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn-github svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        /* =========================================
+           4. CONTACT & FOOTER 
+           ========================================= */
+        .footer-section {
+            margin-top: 80px;
+            padding: 60px 40px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), rgba(0, 229, 255, 0.03));
+            border: 1px solid rgba(0, 229, 255, 0.2);
+            border-radius: 16px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 0 40px rgba(0, 229, 255, 0.05);
+            scroll-margin-top: 90px;
+        }
+
+        .footer-section h2 {
+            font-size: 2.2rem;
+            margin: 0 0 15px 0;
+            color: #fff;
+        }
+
+        .footer-section p {
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 30px auto;
+            font-size: 1.05rem;
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .btn-contact {
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #09090b;
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.6);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            margin-top: 40px;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 20px;
+        }
+
+        /* =========================================
+           5. NÚT QUAY LÊN ĐẦU TRANG (BACK TO TOP)
+           ========================================= */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: #09090b;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+            transform: translateY(20px);
+        }
+
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 25px rgba(0, 229, 255, 0.7);
+        }
+
+        .back-to-top svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        /* =========================================
+           6. CSS RESPONSIVE (MÀN HÌNH NHỎ <= 768px)
+           ========================================= */
+        @media (max-width: 768px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                gap: 35px;
+                padding-left: 0;
+                margin-bottom: 80px;
+            }
+
+            .hero-text p {
+                margin: 0 auto;
+            }
+
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+
+            /* Thu nhỏ vòng xoay orbit */
+            .avatar-container {
+                width: 220px;
+                height: 220px;
+            }
+
+            .avatar {
+                width: 120px;
+                height: 120px;
+            }
+
+            .tech-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 0.65rem;
+            }
+
+            /* Skills từ 3 cột -> 1 cột */
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+
+            /* Thanh Nav: cho phép lướt ngang nếu màn hình quá nhỏ */
+            .quick-nav {
+                justify-content: flex-start;
+                overflow-x: auto;
+                white-space: nowrap;
+                padding: 15px;
+                gap: 20px;
+            }
+
+            /* Ẩn thanh cuộn của Menu ngang trên mobile */
+            .quick-nav::-webkit-scrollbar {
+                display: none;
+            }
+
+            .timeline-item {
+                padding-left: 40px;
+            }
+
+            .footer-section {
+                padding: 40px 20px;
+            }
+
+            /* Chỉnh lại vị trí nút Back to Top cho gọn */
+            .back-to-top {
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Thanh truy cập nhanh (Quick Navigation) -->
+    <nav class="quick-nav">
+        <a href="#skills">Skills</a>
+        <a href="#projects">Projects</a>
+        <a href="#experience">Experience</a>
+        <a href="#contact">Contact</a>
+    </nav>
+
+    <div class="container">
+
+        <!-- Hero Section -->
+        <div class="hero">
+            <div class="avatar-container">
+                <div class="orbit" id="tech-orbit">
+                    <div class="tech-icon" data-angle="0">C#</div>
+                    <div class="tech-icon" data-angle="72">Node</div>
+                    <div class="tech-icon" data-angle="144">SQL</div>
+                    <div class="tech-icon" data-angle="216">Redis</div>
+                    <div class="tech-icon" data-angle="288">AWS</div>
+                </div>
+                <div class="avatar">
+                    [Ảnh Đại Diện]
+                </div>
+            </div>
+            <div class="hero-text">
+                <h1>Đỗ Hữu Hậu</h1>
+                <h2>Software Engineer | Backend Architecture</h2>
+                <p>Kiến tạo các hệ thống phân tán mạnh mẽ và tối ưu luồng dữ liệu. Tập trung vào việc triển khai kiến
+                    trúc phần mềm sạch, đảm bảo hiệu năng và tính toàn vẹn dữ liệu.</p>
+            </div>
+        </div>
+
+        <!-- Kỹ năng (Core Competencies) -->
+        <h2 class="section-header" id="skills">Core Competencies</h2>
+        <div class="skills-section" id="skills-trigger">
+            <div class="scan-line"></div>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <h3>Programming</h3>
+                    <p>C#, Java, Python, JavaScript. Building logic and handling asynchronous tasks effectively.</p>
+                </div>
+                <div class="skill-card">
+                    <h3>Databases</h3>
+                    <p>SQL Server, Oracle, PostgreSQL, MongoDB, Firebase. Strong focus on schema design and indexing.
+                    </p>
+                </div>
+                <div class="skill-card">
+                    <h3>Technologies</h3>
+                    <p>Docker, RabbitMQ, Redis, NodeJs, ReactJs, ASP Web API, Flask API.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dự án nổi bật (Projects) -->
+        <h2 class="section-header" id="projects">Featured Projects</h2>
+        <div class="timeline">
+            <!-- Project 1 -->
+            <div class="timeline-item reveal-item">
+                <div class="timeline-card">
+                    <span class="date">APR 2026 - PRESENT</span>
+                    <h3>Power Corporation System</h3>
+                    <h4>Backend Developer</h4>
+                    <p>Implemented an event-driven architecture using RabbitMQ to asynchronously route operational
+                        commands between 2 core servers, ensuring reliable communication and zero data loss. Deployed
+                        and managed a distributed database system across 4 distinct server nodes.</p>
+                    <div class="tags">
+                        <span class="tag">NodeJs</span><span class="tag">RabbitMQ</span><span
+                            class="tag">Oracle</span><span class="tag">Redis</span>
+                    </div>
+                    <a href="https://github.com/dohuuhau2005" target="_blank" class="btn-github">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                        </svg>
+                        View Architecture & Source Code
+                    </a>
+                </div>
+            </div>
+
+            <!-- Project 2 -->
+            <div class="timeline-item reveal-item">
+                <div class="timeline-card">
+                    <span class="date">DEC 2025 - AUG 2026</span>
+                    <h3>Medical System (Brain Tumor)</h3>
+                    <h4>Fullstack Developer</h4>
+                    <p>Engineered a distributed, asynchronous processing pipeline for MRI brain tumor analysis,
+                        decoupling monolithic workflows into 5 independent microservices. Handled process crashing and
+                        timeout problems during deep learning inferences via Python workers.</p>
+                    <div class="tags">
+                        <span class="tag">FlaskAPI</span><span class="tag">MongoDB</span><span
+                            class="tag">NodeJs</span><span class="tag">RabbitMQ</span>
+                    </div>
+                    <a href="https://github.com/dohuuhau2005" target="_blank" class="btn-github">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                        </svg>
+                        View Architecture & Source Code
+                    </a>
+                </div>
+            </div>
+
+            <!-- Project 3 -->
+            <div class="timeline-item reveal-item">
+                <div class="timeline-card">
+                    <span class="date">AUG 2025 - PRESENT</span>
+                    <h3>Souvenir E-commerce Platform</h3>
+                    <h4>Fullstack Developer</h4>
+                    <p>Implemented a microservices architecture and deployed an automated, standalone service
+                        specifically for voucher distribution. Integrated Redis to cache popular souvenir data,
+                        significantly reducing database load.</p>
+                    <div class="tags">
+                        <span class="tag">ASP Web API</span><span class="tag">ReactJs</span><span class="tag">SQL
+                            Server</span><span class="tag">Redis</span>
+                    </div>
+                    <a href="https://github.com/dohuuhau2005" target="_blank" class="btn-github">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                        </svg>
+                        View Architecture & Source Code
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Học vấn & Kinh nghiệm (Experience) -->
+        <h2 class="section-header" id="experience">Experience & Education</h2>
+        <div class="timeline">
+            <div class="timeline-item reveal-item">
+                <div class="timeline-card">
+                    <span class="date">SEP 2026 - PRESENT</span>
+                    <h3>Teaching Assistant (DBMS)</h3>
+                    <h4>HUFLIT University</h4>
+                    <p>Mentored students during weekly lab sessions, providing hands-on support in writing SQL queries,
+                        designing database schemas, and debugging. Created step-by-step video tutorials for lab
+                        solutions.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item reveal-item">
+                <div class="timeline-card">
+                    <span class="date">EXPECTED FEB 2027</span>
+                    <h3>Software Engineering (GPA: 3.57/4.0)</h3>
+                    <h4>HUFLIT University</h4>
+                    <p>Technical Focus: Distributed Systems, System Architecture, Database Optimization & Scalability,
+                        Algorithms.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Liên hệ (Contact) -->
+        <div class="footer-section reveal-item" id="contact">
+            <h2>Let's Build Something Great Together</h2>
+            <p>Tôi luôn sẵn sàng trao đổi về các cơ hội hợp tác thiết kế kiến trúc phần mềm, phát triển Backend hoặc các
+                dự án hệ thống phân tán.</p>
+
+            <div class="contact-links">
+                <a href="mailto:dohuuhau2005@gmail.com" class="btn-contact btn-primary">
+                    📧 Liên hệ Email
+                </a>
+                <a href="https://github.com/dohuuhau2005" target="_blank" class="btn-contact btn-secondary">
+                    💻 GitHub Portfolio
+                </a>
+            </div>
+
+            <div class="copyright">
+                © 2026 Đỗ Hữu Hậu — Built with Passion for Scalable Systems.
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Nút Lên Đầu Trang -->
+    <button id="backToTop" class="back-to-top" title="Lên đầu trang">
+        <svg viewBox="0 0 24 24">
+            <path d="M12 4l-8 8h6v8h4v-8h6z" />
+        </svg>
+    </button>
+
+    <!-- JavaScript -->
+    <script>
+        /* =========================================
+           1. XỬ LÝ VÒNG XOAY ORBIT (RESPONSIVE RADIUS)
+           ========================================= */
+        const orbit = document.getElementById('tech-orbit');
+        const icons = document.querySelectorAll('.tech-icon');
+
+        let currentRotation = 0;
+        let isDragging = false;
+        let startX = 0;
+        let lastRotation = 0;
+
+        // Hàm tính toán bán kính vòng xoay dựa trên kích thước màn hình
+        function getOrbitRadius() {
+            return window.innerWidth <= 768 ? 100 : 130;
+        }
+
+        function updateOrbitPositions() {
+            const radius = getOrbitRadius();
+            orbit.style.transform = `rotate(${currentRotation}deg)`;
+            icons.forEach(icon => {
+                const baseAngle = parseFloat(icon.getAttribute('data-angle'));
+                icon.style.transform = `rotate(${baseAngle}deg) translateY(-${radius}px) rotate(${-baseAngle}deg) rotate(${-currentRotation}deg)`;
+            });
+        }
+
+        function autoSpin() {
+            if (!isDragging) {
+                currentRotation += 0.2;
+                updateOrbitPositions();
+            }
+            requestAnimationFrame(autoSpin);
+        }
+
+        updateOrbitPositions();
+        autoSpin();
+
+        // Cập nhật lại vòng xoay khi người dùng lật màn hình / thay đổi size web
+        window.addEventListener('resize', updateOrbitPositions);
+
+        orbit.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX;
+            lastRotation = currentRotation;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const dx = e.clientX - startX;
+            currentRotation = lastRotation + (dx * 0.8);
+            updateOrbitPositions();
+        });
+
+        window.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        // Touch events cho điện thoại (xoay bằng ngón tay)
+        orbit.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            startX = e.touches[0].clientX;
+            lastRotation = currentRotation;
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            const dx = e.touches[0].clientX - startX;
+            currentRotation = lastRotation + (dx * 0.8);
+            updateOrbitPositions();
+        });
+
+        window.addEventListener('touchend', () => {
+            isDragging = false;
+        });
+
+        /* =========================================
+           2. XỬ LÝ SCROLL NÚT BACK TO TOP VÀ HIỆU ỨNG
+           ========================================= */
+        const backToTopBtn = document.getElementById("backToTop");
+
+        window.addEventListener("scroll", () => {
+            // Hiển thị nút Lên Đầu Trang khi cuộn quá 400px
+            if (window.scrollY > 400) {
+                backToTopBtn.classList.add("show");
+            } else {
+                backToTopBtn.classList.remove("show");
+            }
+        });
+
+        // Xử lý bấm lên đầu trang mượt mà
+        backToTopBtn.addEventListener("click", () => {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+
+        /* =========================================
+           3. INTERSECTION OBSERVER CHO HIỆU ỨNG RƠI
+           ========================================= */
+        document.addEventListener("DOMContentLoaded", () => {
+            const observerOptions = { root: null, rootMargin: '0px', threshold: 0.15 };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        if (entry.target.id === 'skills-trigger') {
+                            entry.target.classList.add('active');
+                        }
+                        if (entry.target.classList.contains('reveal-item')) {
+                            entry.target.classList.add('visible');
+                        }
+                    }
+                });
+            }, observerOptions);
+
+            const skillsTrigger = document.getElementById('skills-trigger');
+            if (skillsTrigger) observer.observe(skillsTrigger);
+
+            document.querySelectorAll('.reveal-item').forEach(item => observer.observe(item));
+        });
+    </script>
+</body>
+
+</html>
