@@ -21,6 +21,79 @@
             --line-color: rgba(255, 255, 255, 0.1);
         }
 
+        [data-theme="light"] {
+            --bg-color: #f8fafc;
+            /* Nền chính: Trắng xám nhẹ (Slate-50), không bị chói mắt */
+            --card-bg: #ffffff;
+            /* Nền card: Trắng tinh nổi bật trên nền xám nhẹ */
+            --text-main: #0f172a;
+            /* Chữ tiêu đề & chính: Xanh đen đậm (Slate-900), cực kỳ sắc nét */
+            --text-muted: #64748b;
+            /* Chữ phụ/mô tả: Xám trung tính (Slate-500), dịu mắt */
+            --accent: #0284c7;
+            /* Màu điểm nhấn: Xanh dương công nghệ (Sky-600), đủ độ đậm để nổi trên nền trắng */
+            --accent-glow: rgba(2, 132, 199, 0.2);
+            /* Hiệu ứng phát sáng nhẹ nhàng cho light mode */
+            --line-color: rgba(15, 23, 42, 0.3);
+
+            /* Đường viền: Xám mờ tinh tế */
+            h2 {
+                color: #0f172a;
+            }
+
+            .footer-section h2 {
+                color: #0f172a;
+            }
+
+            .quick-nav {
+                background: rgba(248, 250, 252, 0.8);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+            }
+
+            .quick-nav a {
+                color: #0f172a;
+            }
+
+            .btn-primary {
+                background: var(--accent);
+                color: #ffffff;
+            }
+
+            .tech-icon {
+                background: #ffffff;
+                border: 1px solid var(--accent);
+                color: var(--accent);
+            }
+
+
+            .orbit {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                /* Tăng alpha lên 0.9 để màu xanh tươi và rực hơn */
+                border: 1.5px dashed rgba(0, 229, 255, 0.9);
+
+                /* Hiệu ứng phát sáng neon trực tiếp cho viền nét đứt */
+                filter: drop-shadow(0 0 6px rgba(0, 229, 255, 0.8));
+
+                cursor: grab;
+                z-index: 5;
+            }
+
+            .timeline-card h4 {
+                color: #475569;
+            }
+
+
+
+            /* footer copyright */
+            .copyright {
+                color: rgba(15, 23, 42, 0.5);
+            }
+        }
+
         /* Thêm cuộn mượt cho các liên kết mỏ neo */
         html {
             scroll-behavior: smooth;
@@ -30,6 +103,8 @@
             margin: 0;
             background-color: var(--bg-color);
             color: var(--text-main);
+            transition: background 0.3s, color 0.3s;
+            /* Hiệu ứng chuyển màu mượt mà */
             font-family: 'Inter', 'Segoe UI', sans-serif;
             overflow-x: hidden;
             line-height: 1.6;
@@ -96,6 +171,34 @@
             background: var(--accent);
             color: #09090b;
             box-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+        }
+
+        /* nút chuyên đổi giao diện sáng/tối (theme toggle button) --> */
+        .theme-toggle-btn {
+
+            bottom: 25px;
+            right: 25px;
+            background: var(--card-bg);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            /* Hiệu ứng phát sáng neon đặc trưng */
+            box-shadow: 0 0 15px var(--accent-glow);
+            transition: all 0.3s ease;
+            z-index: 9999;
+        }
+
+        .theme-toggle-btn:hover {
+            background: var(--accent);
+            color: var(--bg-color);
+            box-shadow: 0 0 25px var(--accent);
+            transform: scale(1.1) rotate(15deg);
         }
 
         /* =========================================
@@ -685,6 +788,13 @@
         <a href="#contact" data-vi="Liên hệ" data-en="Contact">Liên hệ</a>
         <!-- Nút chuyển ngôn ngữ -->
         <button id="lang-toggle" class="lang-btn">EN</button>
+        <button id="theme-toggle" class="theme-toggle-btn" title="Chuyển đổi giao diện Sáng/Tối">
+            <!-- Icon Mặt trăng Neon mặc định -->
+            <svg id="theme-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2"
+                fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+        </button>
     </nav>
 
     <div class="container">
@@ -1105,6 +1215,51 @@
                 }, 2000);
             });
         }
+        //nút chuyển đổi giao diện sáng/tối
+        const toggleBtn = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+
+        // Icon mặt trời cho Light mode
+        const sunSvg = `
+    <circle cx="12" cy="12" r="5"></circle>
+    <line x1="12" y1="1" x2="12" y2="3"></line>
+    <line x1="12" y1="21" x2="12" y2="23"></line>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+    <line x1="1" y1="12" x2="3" y2="12"></line>
+    <line x1="21" y1="12" x2="23" y2="12"></line>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+`;
+
+        // Icon mặt trăng cho Dark mode
+        const moonSvg = `
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+`;
+
+        // Kiểm tra theme lưu sẵn hoặc theo hệ thống
+        const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+
+        if (currentTheme === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
+            themeIcon.innerHTML = sunSvg;
+        } else {
+            themeIcon.innerHTML = moonSvg;
+        }
+
+        // Bắt sự kiện click đổi theme
+        toggleBtn.addEventListener('click', () => {
+            let theme = document.documentElement.getAttribute('data-theme');
+            if (theme === 'light') {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'dark');
+                themeIcon.innerHTML = moonSvg;
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+                themeIcon.innerHTML = sunSvg;
+            }
+        });
     </script>
 </body>
 
