@@ -21,6 +21,17 @@
             --line-color: rgba(255, 255, 255, 0.1);
         }
 
+        /* thanh cuộn */
+        /* Dành cho Chrome, Safari, Edge */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Dành cho Firefox */
+        * {
+            scrollbar-width: none;
+        }
+
         [data-theme="light"] {
             --bg-color: #f8fafc;
             /* Nền chính: Trắng xám nhẹ (Slate-50), không bị chói mắt */
@@ -101,6 +112,8 @@
 
         body {
             margin: 0;
+            margin-top: 3rem;
+
             background-color: var(--bg-color);
             color: var(--text-main);
             transition: background 0.3s, color 0.3s;
@@ -207,7 +220,7 @@
         .hero {
             display: flex;
             align-items: center;
-            gap: 60px;
+            gap: 61px;
             margin-bottom: 120px;
             padding-left: 20px;
         }
@@ -266,6 +279,7 @@
             border: 1px dashed rgba(0, 229, 255, 0.3);
             cursor: grab;
             z-index: 5;
+
         }
 
         .orbit:active {
@@ -1260,6 +1274,8 @@
                 themeIcon.innerHTML = sunSvg;
             }
         });
+
+
     </script>
 </body>
 
