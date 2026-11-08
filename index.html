@@ -978,7 +978,7 @@
         let lastRotation = 0;
 
         function getOrbitRadius() {
-            return window.innerWidth <= 768 ? 100 : 130;
+            return window.innerWidth <= 768 ? 115 : 130;
         }
 
         function updateOrbitPositions() {
@@ -992,7 +992,7 @@
 
         function autoSpin() {
             if (!isDragging) {
-                currentRotation += 0.2;
+                currentRotation += 0.3;
                 updateOrbitPositions();
             }
             requestAnimationFrame(autoSpin);
